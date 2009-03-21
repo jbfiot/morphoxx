@@ -12,7 +12,7 @@ if (nargin>1)
 end
 
 [ST,I] = dbstack(1);
-if strcmp(ST(1).name,'Cage_GUI')
+if strcmp(ST(1).name,'CageGUI')
     set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
 end
 

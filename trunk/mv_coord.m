@@ -59,7 +59,7 @@ clear tmp;
 
 % Compute MV Coords
 coord = [(r(end)*A(1)-r(1)*B(1)+r(2)*A(end))/(A(end)*A(1)) ,... % elem #1
-    (r(1:end-2).*A(2:end-1)-r(2:end-1).*B(2:end-1)-r(3:end).*A(1:end-2))./(A(1:end-2).*A(2:end-1)),... % elem #2 to #end-1
+    (r(1:end-2).*A(2:end-1)-r(2:end-1).*B(2:end-1)+r(3:end).*A(1:end-2))./(A(1:end-2).*A(2:end-1)),... % elem #2 to #end-1
     (r(end-1)*A(end)-r(end)*B(end)+r(1)*A(end-1))/(A(end-1)*A(end))]; % last elem
 
 % Normalization
@@ -70,3 +70,17 @@ if nargin>2
     end
 end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
