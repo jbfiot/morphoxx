@@ -1,4 +1,6 @@
 function coord = mv_coord(cage,p,verbose)
+% function coord = mv_coord(cage,p,verbose)
+% 
 % Compute Mean Value Coordinates of a point p within the input cage
 %
 % Input

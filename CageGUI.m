@@ -1,4 +1,6 @@
 function CageGUI(selector,image,cage_filename,deformed_cage_filename)
+% CageGUI(selector,image,cage_filename,deformed_cage_filename)
+% 
 % GUI
 
 % File of the MorphoxX Project
@@ -19,26 +21,13 @@ end
 
 switch selector
     case 'select_set'
-        set_list={'Sonic','Checkerboard'};
+        set_list={'Sonic','Checkerboard','L Checkerboard'};
         [selection,ok]=listdlg('PromptString','Select a data set:', 'SelectionMode','single','ListString',set_list);
         if ~ok %default value if not chosen
             selection=1;
         end
 
-        switch set_list{selection}
-            case 'Sonic'
-                % Sonic set
-                image = imread('Data/sonic-classic.jpg');
-                cage_filename = 'Data/sonic_cage.txt';
-                deformed_cage_filename = 'Data/sonic_def_cage.txt';
-
-            case 'Checkerboard'
-                % Checkerboard set
-                image = imread('Data/100px-Checkerboard_pattern.svg.png');
-                cage_filename = 'Data/checkerboard_cage.txt';
-                deformed_cage_filename = 'Data/checkerboard_def_cage.txt';
-        end
-
+        [image,cage_filename,deformed_cage_filename] = switchset(set_list{selection});
 
         CageGUI('init',image,cage_filename,deformed_cage_filename)
 
