@@ -123,7 +123,7 @@ switch selector
 
     case 'end' % End
         fig = gcf; ud=get(fig,'UserData');
-        draw_cage(ud.cage);
+        subplot(2,2,1); draw_cage(ud.cage);
 
         ud.cage_finished=1;
         if isequal(size(ud.deformed_cage),[0,0])
@@ -133,7 +133,7 @@ switch selector
             ud.deformed_cage = ud.cage;
         end
 
-        draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
+        subplot(2,2,3);draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
         set(fig,'UserData',ud);
 
     case 'increase_cage_point_ind'
@@ -143,7 +143,7 @@ switch selector
         else
             ud.cage_point_ind = 1;
         end
-        draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
+        subplot(2,2,3);draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
         set(fig,'UserData',ud);
 
     case 'decrease_cage_point_ind'
@@ -153,7 +153,7 @@ switch selector
         else
             ud.cage_point_ind = size(ud.deformed_cage,2);
         end
-        draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
+        subplot(2,2,3);draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
         set(fig,'UserData',ud);
 
 
@@ -164,7 +164,7 @@ switch selector
             % Update point
             ud.deformed_cage(:,ud.cage_point_ind)=[pt(1,2);pt(1,1)]; 
             % Redraw cage
-            draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
+            subplot(2,2,3);draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
             % Save deformed cage
             set(fig,'UserData',ud);
         else
@@ -176,8 +176,8 @@ switch selector
         subplot(2,2,1);
         if ud.cage_finished
             display('Computing deformation... (Long process, please be patient)');
-            deformed_pic = mv_deform(ud.image,ud.cage,ud.deformed_cage);
-            draw_cage(ud.deformed_cage,deformed_pic,ud.cage_point_ind);
+            deformed_pic = deform(ud.image,ud.cage,ud.deformed_cage,'MV');
+            subplot(2,2,3);draw_cage(ud.deformed_cage,deformed_pic,ud.cage_point_ind);
             display('Done.');
         else
             display('Finish the cage before!');
