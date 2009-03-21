@@ -1,6 +1,7 @@
 function CageGUI(selector,image,cage_filename,deformed_cage_filename)
-% GUI fonction for the MorphoxX project
+% GUI
 
+% File of the MorphoxX Project
 % @author: JB Fiot (HellWoxX)
 
 clc;
@@ -33,7 +34,7 @@ switch selector
 
             case 'Checkerboard'
                 % Checkerboard set
-                image = imread('Data/500px-Checkerboard_pattern.svg.png');
+                image = imread('Data/100px-Checkerboard_pattern.svg.png');
                 cage_filename = 'Data/checkerboard_cage.txt';
                 deformed_cage_filename = 'Data/checkerboard_def_cage.txt';
         end
@@ -132,7 +133,7 @@ switch selector
             ud.deformed_cage = ud.cage;
         end
 
-        draw_cage(ud.deformed_cage,ud.cage_point_ind,ud.image);
+        draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
         set(fig,'UserData',ud);
 
     case 'increase_cage_point_ind'
@@ -142,7 +143,7 @@ switch selector
         else
             ud.cage_point_ind = 1;
         end
-        draw_cage(ud.deformed_cage,ud.cage_point_ind,ud.image);
+        draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
         set(fig,'UserData',ud);
 
     case 'decrease_cage_point_ind'
@@ -152,7 +153,7 @@ switch selector
         else
             ud.cage_point_ind = size(ud.deformed_cage,2);
         end
-        draw_cage(ud.deformed_cage,ud.cage_point_ind,ud.image);
+        draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
         set(fig,'UserData',ud);
 
 
@@ -163,14 +164,28 @@ switch selector
             % Update point
             ud.deformed_cage(:,ud.cage_point_ind)=[pt(1,2);pt(1,1)]; 
             % Redraw cage
-            draw_cage(ud.deformed_cage,ud.cage_point_ind,ud.image);
+            draw_cage(ud.deformed_cage,ud.image,ud.cage_point_ind);
             % Save deformed cage
             set(fig,'UserData',ud);
         else
             display('Finish 1st cage before! :p');
         end
         
-
+    case 'deform'
+        fig = gcf; ud=get(fig,'UserData');
+        subplot(2,2,1);
+        if ud.cage_finished
+            display('Computing deformation... (Long process, please be patient)');
+            deformed_pic = mv_deform(ud.image,ud.cage,ud.deformed_cage);
+            draw_cage(ud.deformed_cage,deformed_pic,ud.cage_point_ind);
+            display('Done.');
+        else
+            display('Finish the cage before!');
+        end
+        
+        
+        
+        
     case 'save'
         fig = gcf; ud=get(fig,'UserData');
         points2save=ud.cage; % We cannot save directly ud.cage
