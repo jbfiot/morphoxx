@@ -1,4 +1,6 @@
 function draw_cage(cage,image,active_point)
+% function draw_cage(cage,image,active_point)
+%
 % This function draws the input cage onto the input image.
 % If specified, the active point is displayed in red.
 % Other points are displayed in cyan.
@@ -8,10 +10,11 @@ function draw_cage(cage,image,active_point)
 
 
 if (nargin>1)
-    h3=imshow(image); hold on; axis image;
+    h3=imagesc(image); hold on; axis off;
 end
 
 [ST,I] = dbstack(1);
+
 if strcmp(ST(1).name,'CageGUI')
     set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
 end
