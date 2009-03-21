@@ -9,14 +9,15 @@ function draw_cage(cage,image,active_point)
 % @author: JB Fiot (HellWoxX)
 
 
-if (nargin>1)
-    h3=imagesc(image); hold on; axis off;
-end
-
 [ST,I] = dbstack(1);
 
 if strcmp(ST(1).name,'CageGUI')
-    set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
+    h3=imshow(image); hold on; axis off;
+    if nargin==3
+        set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
+    end
+elseif strcmp(ST(1).name,'display_coordinate_values')
+    h3=imagesc(image); hold on; axis off;
 end
 
 
