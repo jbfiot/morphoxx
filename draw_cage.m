@@ -1,7 +1,10 @@
-function draw_cage(cage,active_point,image)
+function draw_cage(cage,image,active_point)
 % This function draws the input cage onto the input image.
 % If specified, the active point is displayed in red.
 % Other points are displayed in cyan.
+
+% File of the MorphoxX Project
+% @author: JB Fiot (HellWoxX)
 
 if nargin == 1 
     subplot(2,2,1);

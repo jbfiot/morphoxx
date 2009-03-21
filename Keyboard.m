@@ -1,8 +1,9 @@
 function Keyboard(src,evnt)
-% Projet MorphoxX
 % Gestion des interruptions clavier
 
+% File of the MorphoxX Project
 % @author: JB Fiot (HellWoxX)
+
 switch evnt.Key
     case 'e'
         CageGUI('end');
@@ -27,6 +28,9 @@ switch evnt.Key
         CageGUI('increase_cage_point_ind');
     case 'rightarrow'
         CageGUI('decrease_cage_point_ind');
+        
+    case 'd'
+        CageGUI('deform');
     otherwise
         display(['Key pressed:', evnt.Key]);
 
