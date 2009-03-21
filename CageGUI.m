@@ -123,7 +123,7 @@ switch selector
 
     case 'end' % End
         fig = gcf; ud=get(fig,'UserData');
-        subplot(2,2,1); draw_cage(ud.cage);
+        subplot(2,2,1); draw_cage(ud.cage,ud.image);
 
         ud.cage_finished=1;
         if isequal(size(ud.deformed_cage),[0,0])
@@ -176,7 +176,7 @@ switch selector
         subplot(2,2,1);
         if ud.cage_finished
             display('Computing deformation... (Long process, please be patient)');
-            deformed_pic = deform(ud.image,ud.cage,ud.deformed_cage,'MV');
+            deformed_pic = deform(ud.image,ud.cage,ud.deformed_cage,'MV',1);
             subplot(2,2,3);draw_cage(ud.deformed_cage,deformed_pic,ud.cage_point_ind);
             display('Done.');
         else
