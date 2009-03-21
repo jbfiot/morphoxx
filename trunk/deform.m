@@ -52,8 +52,8 @@ for i=1:size_x
     end
 end
 
-display(['IN:,',int2str(in)]);
-display(['OUT:,',int2str(out)]);
+display(['IN: ',int2str(in)]);
+display(['OUT: ',int2str(out)]);
 
 
 

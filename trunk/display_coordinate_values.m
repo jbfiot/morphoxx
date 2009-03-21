@@ -7,7 +7,7 @@
 clc; clear; close all;
 
 display('Computing... Please be patient and let Matlab keep the focus!');
-set = 'Checkerboard';
+set = 'L Checkerboard';
 if ~exist('Output','dir')
     mkdir('Output');
 end
