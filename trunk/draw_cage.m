@@ -6,12 +6,16 @@ function draw_cage(cage,image,active_point)
 % File of the MorphoxX Project
 % @author: JB Fiot (HellWoxX)
 
-if nargin == 1 
-    subplot(2,2,1);
-else
-    subplot(2,2,3);
-    h3=imshow(image); hold on; axis image; set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
+
+if (nargin>1)
+    h3=imshow(image); hold on; axis image;
 end
+
+[ST,I] = dbstack(1);
+if strcmp(ST(1).name,'Cage_GUI')
+    set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
+end
+
 
 h = plot(cage(2,:),cage(1,:), '.c');set(h, 'MarkerSize', 20 );
 for i=1:size(cage,2)-1
@@ -22,7 +26,7 @@ if size(cage,2)>1
     line(cage(2,[1,end]),cage(1,[1,end]));
 end
 
-if nargin > 1
+if nargin > 2
     h=plot(cage(2,active_point),cage(1,active_point), '.r');set(h, 'MarkerSize', 20 );
 end
         
