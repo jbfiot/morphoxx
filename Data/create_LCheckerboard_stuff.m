@@ -13,7 +13,7 @@ I2=[ones(16,100,3);...
     ones(34,16,3),I(:,8:end,:),I(:,8:14,:),I,ones(34,16,3);...
     ones(16,100,3)];
 
-imwrite(I2, 'L-checkerboard.jpg');
+imwrite(I2, 'L-checkerboard.png');
 
 cage = [16.5,84.5,84.5,50.5,50.5,16.5;
         16.5,16.5,84.5,84.5,50.5,50.5];

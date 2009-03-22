@@ -21,7 +21,7 @@ switch set
 
     case 'L Checkerboard'
         % L checkerboard set
-        image = imread('Data/L-checkerboard.jpg');
+        image = imread('Data/L-checkerboard.png');
         cage_filename = 'Data/L-checkerboard_cage.txt';
         deformed_cage_filename = 'Data/L-checkerboard_def_cage.txt';
 

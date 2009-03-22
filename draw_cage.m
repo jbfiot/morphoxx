@@ -16,6 +16,8 @@ if strcmp(ST(1).name,'CageGUI')
     if nargin==3
         set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
     end
+elseif strcmp(ST(1).name,'compute_quick_deform')
+    h3=imshow(image); hold on; axis off;
 elseif strcmp(ST(1).name,'display_coordinate_values')
     h3=imagesc(image); hold on; axis off;
 end

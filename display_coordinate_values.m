@@ -20,16 +20,11 @@ if ~exist(['Output/',set],'dir')
     mkdir(['Output/',set]);
 end
 
-vertex_nb = size(cage,2);
-
-coord_values = zeros(size(image,1),size(image,2),vertex_nb);
 
 % Getting coords
-for i=1:size(image,1)
-    for j=1:size(image,2)
-        coord_values(i,j,:) = get_coord(cage,[i;j],coord_type);
-    end
-end
+coord_values = get_coord(cage,size(image,1),size(image,2),coord_type);
+
+vertex_nb = size(cage,2);
 
 % Display and save
 figure;
