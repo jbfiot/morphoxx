@@ -21,11 +21,13 @@ function deformed_pic = deform_pic(pic,cage,deformed_cage,coord_type,interpolate
 deformed_pic = ones(size(pic));
 in=0;
 out=0;
+coord=get_coord(deformed_cage,size_x,size_y,coord_type);
+
 for i=1:size_x
     for j=1:size_y
-        coord = get_coord(deformed_cage,[i;j],coord_type,0);
+        coord_p = coord(i,j,:);
 
-        before_def_point = cage*coord';
+        before_def_point = cage*squeeze(coord_p);
         before_def_x = before_def_point(1);
         before_def_y = before_def_point(2);
 
@@ -52,6 +54,6 @@ display(['OUT: ',int2str(out)]);
 
 
 
-
+deformed_pic=uint8(deformed_pic);
 
 end

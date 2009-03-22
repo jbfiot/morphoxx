@@ -39,12 +39,12 @@ switch selector
         fig = figure('Position',pos,'CloseRequestFcn','CageGUI(''exit'')','KeyPressFcn', @Keyboard);
         axes('Parent', fig);
         subplot(2,2,1);
-        h1=imshow(image); hold on; title('Original cage');axis image;
+        h1=imshow(image); hold on; title('Original');axis image;
         set(h1, 'ButtonDownFcn','CageGUI(''click'')');
         xlabel('R - Reload, C - Clear, S - Save, E - End, I - Interior, M - Mesh, O - Other set, Q - Quit');
 
-        subplot(2,2,3);title('Deformed cage');
-        h3=imshow(image); hold on; axis image; set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
+        subplot(2,2,3);
+        h3=imshow(image); hold on; axis image; set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');title('Deformed');xlabel('D - Deform');
 
         user_choice = 'Draw new cage';
         
@@ -165,7 +165,7 @@ switch selector
         subplot(2,2,1);
         if ud.cage_finished
             display('Computing deformation... (Long process, please be patient)');
-            deformed_pic = deform(ud.image,ud.cage,ud.deformed_cage,'MV',1);
+            deformed_pic = deform_pic(ud.image,ud.cage,ud.deformed_cage,'MV',1);
             subplot(2,2,3);draw_cage(ud.deformed_cage,deformed_pic,ud.cage_point_ind);
             display('Done.');
         else
