@@ -68,7 +68,7 @@ switch selector
         
         % We propose the user to use the saved deformed cage if he has
         % chosen to use the 1st cage, if the def cage file exists, and if
-        % the corresponding file has as many points as the previous one.
+        % the corresponding cage has as many points as the previous one.
         
         if strcmp(user_choice,'Use saved cage')==1
             ud.cage = load(cage_filename);
