@@ -26,18 +26,28 @@ coord=get_coord(deformed_cage,size_x,size_y,coord_type);
 for i=1:size_x
     for j=1:size_y
         coord_p = coord(i,j,:);
+        
+        if (strcmp(coord_type,'MV') || strcmp(coord_type,'H'))
+            % Mean Value and Harmonic are coordinates relative to the
+            % positions of the vertices.
+            before_def_point = cage*squeeze(coord_p);
+            before_def_x = before_def_point(1);
+            before_def_y = before_def_point(2);
+        elseif strcmp(coord_type,'G')
+            % Green coordinates also take into account the outward normals
+            % of the edges (in 2D).
+           error('Not implemented yet'); 
+        end
 
-        before_def_point = cage*squeeze(coord_p);
-        before_def_x = before_def_point(1);
-        before_def_y = before_def_point(2);
-
-        [X,Y] = meshgrid(floor(before_def_x):floor(before_def_x)+1,floor(before_def_y):floor(before_def_y)+1);
 
         if floor(before_def_x)>0 && floor(before_def_y)>0 && before_def_x<size_x && before_def_y<size_y
-            for k=1:nb_channels
-                if interpolate
+            if interpolate
+                [X,Y] = meshgrid(floor(before_def_x):floor(before_def_x)+1,floor(before_def_y):floor(before_def_y)+1);
+                for k=1:nb_channels
                     deformed_pic(i,j,k) = interp2(X,Y,pic(floor(before_def_x):floor(before_def_x)+1,floor(before_def_y):floor(before_def_y)+1,k),before_def_x,before_def_y);
-                else
+                end
+            else
+                for k=1:nb_channels
                     deformed_pic(i,j,k) = pic(floor(before_def_x),floor(before_def_y),k);
                 end
             end

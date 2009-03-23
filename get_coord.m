@@ -17,10 +17,10 @@ function coord = get_coord(cage,size_x,size_y,coord_type)
 % @author: JB Fiot (HellWoxX)
 
 nb_vertices = size(cage,2);
-coord = zeros(size_x,size_y,nb_vertices);
 
 switch coord_type
     case 'MV'
+        coord = zeros(size_x,size_y,nb_vertices);
         % =========================================================================
         %                       Mean Value Coordinates
         % =========================================================================
@@ -86,14 +86,83 @@ switch coord_type
         % Ref. DEROSE, T., AND MEYER, M. 2006. Harmonic coordinates.
         %       Pixar Technical Memo 06-02, Pixar Animation Studios, January.
         %
-  
-        error('Not implemented yet');
+        
+
+        % Creating the mask
+        display('Creation of the mask and initialization of the coordinates...');
+        coord = zeros(size_x,size_y,nb_vertices);
+        pic_mask = poly2mask(cage(2,:),cage(1,:),size_x,size_y);
+        pic_mask = 255*uint8(pic_mask); % Exterior: 0, Interior: 255
+
+        % Adding the 'BOUNDARY' labels, and initializing the coords for the
+        % boundary pixels
+        for i=1:size_x
+            for j=1:size_y
+                for k=1:nb_vertices-1
+                    p1=cage(:,k);
+                    p2=cage(:,k+1);
+                    if (norm(cross([p2-p1;0],[[i;j]-p1;0]))/norm(p1-p2)<.5 && max(norm(p1-[i;j]),norm(p2-[i;j]))<norm(p1-p2))
+                        % If the distance from the pixel to the edge is
+                        % less than 0.5 pixel, and the max distance to 
+                        % the vertices is less than the length of the 
+                        % edge,  we consider this pixel on the boundary
+                        % (corresponding value for the mask: 128)
+                        pic_mask(i,j)=128;
+                        coord(i,j,k) = norm([i;j]-p2)/norm(p1-p2); % Value is 1 in vertex k, 0 in vertex k+1
+                        coord(i,j,k+1)= norm([i;j]-p1)/norm(p1-p2); % Inverse values
+                    end
+                end
+                p1=cage(:,end);
+                p2=cage(:,1);
+                if (norm(cross([p2-p1;0],[[i;j]-p1;0]))/norm(p1-p2)<.5 && max(norm(p1-[i;j]),norm(p2-[i;j]))<norm(p1-p2))
+                    pic_mask(i,j)=128;
+                    coord(i,j,end) = norm([i;j]-p2)/norm(p1-p2); % Value is 1 in vertex end, 0 in vertex 1
+                    coord(i,j,1)= norm([i;j]-p1)/norm(p1-p2); % Inverse values
+                end
+            end
+        end
+        
+        % Display pic_mask (useful for debug)
+%         f=gcf; figure;imshow(pic_mask);title('pic mask'); figure(f);
+        display('Done');
+        
+
+        % Laplacian Smoothing
+        display('Laplacian smoothing...');
+        niter_max = 2;
+        [X_ind,Y_ind]=find(pic_mask==255);
+%         nb_int_points = length(X_ind);        
+        average_modif=1;
+        new_coord=zeros(size_x,size_y,nb_vertices);
+        niter=1;
+
+        while (average_modif<1e-3 || niter<niter_max)
+            niter=niter+1;
+
+            new_coord(X_ind,Y_ind,:)=(coord(X_ind-1,Y_ind,:)+coord(X_ind+1,Y_ind,:)+coord(X_ind,Y_ind-1,:)+coord(X_ind,Y_ind+1,:))/4;
+
+            average_modif = mean(new_coord(X_ind,Y_ind,:)-coord(X_ind,Y_ind,:));
+               
+            coord = new_coord;
+        end
+        
+        if (niter==niter_max)
+            display('Maximum number of iterations reached in the computation of Harmonic Coordinates');
+        end
+        display('Done');
+        
+        
+        
+        
+        
+        
+        
         
     case 'G'
         % =========================================================================
         %                         Green Coordinates
         % =========================================================================     
-        
+        coord = zeros(size_x,size_y,2*nb_vertices);
         error('Not implemented yet');
         
     otherwise
