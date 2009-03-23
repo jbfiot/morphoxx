@@ -100,7 +100,11 @@ switch coord_type
             for j=1:size_y
                 for k=1:nb_vertices-1
                     p1=cage(:,k);
-                    p2=cage(:,k+1);
+                    if k~=nb_vertices
+                        p2=cage(:,k+1);
+                    else
+                        p2=cage(:,1);
+                    end
                     if (norm(cross([p2-p1;0],[[i;j]-p1;0]))/norm(p1-p2)<.5 && max(norm(p1-[i;j]),norm(p2-[i;j]))<norm(p1-p2))
                         % If the distance from the pixel to the edge is
                         % less than 0.5 pixel, and the max distance to 
@@ -111,13 +115,6 @@ switch coord_type
                         coord(i,j,k) = norm([i;j]-p2)/norm(p1-p2); % Value is 1 in vertex k, 0 in vertex k+1
                         coord(i,j,k+1)= norm([i;j]-p1)/norm(p1-p2); % Inverse values
                     end
-                end
-                p1=cage(:,end);
-                p2=cage(:,1);
-                if (norm(cross([p2-p1;0],[[i;j]-p1;0]))/norm(p1-p2)<.5 && max(norm(p1-[i;j]),norm(p2-[i;j]))<norm(p1-p2))
-                    pic_mask(i,j)=128;
-                    coord(i,j,end) = norm([i;j]-p2)/norm(p1-p2); % Value is 1 in vertex end, 0 in vertex 1
-                    coord(i,j,1)= norm([i;j]-p1)/norm(p1-p2); % Inverse values
                 end
             end
         end
@@ -149,20 +146,47 @@ switch coord_type
         if (niter==niter_max)
             display('Maximum number of iterations reached in the computation of Harmonic Coordinates');
         end
+        
+        % Normalisation
+        % -> à rajouter qd le pb de RAM sera rêglé...
+        
         display('Done');
-        
-        
-        
-        
-        
-        
-        
+             
         
     case 'G'
         % =========================================================================
         %                         Green Coordinates
-        % =========================================================================     
+        % =========================================================================
+        %
+        % Ref. Y. Lipman, D. Levin, D. Cohen-Or. Green Coordinates.
+        
         coord = zeros(size_x,size_y,2*nb_vertices);
+        for i=1:size_x
+            for j=1:size_y
+                eta=[i;j];
+                for k=1:nb_vertices-1
+                    v1=cage(:,k);
+                    if k~=nb_vertices
+                        v2=cage(:,k+1);
+                    else
+                        v2=cage(:,1);
+                    end
+                    a = v2-v1; b=v1-eta;
+                    Q = norm(a);S=norm(b);R=2*dot(a,b);
+                    BA = dot(b,Q*..); SRT = sqrt(4*S*Q-R^2);
+                    L0=log(S);
+                    L1=log(S+Q+R);
+                    A0=atan(R/(S*R*T))/(S*R*T);
+                    A1=atan((2*Q+R)/(S*R*T))/(S*R*T);
+                    A10=A1-A0;L10=L1-L0;
+                    coord(i,j,..) = -Q/(4*pi)*((4*S-R^2)*A10+R/(2*Q)*L10+L1-2);
+                    coord(i,j,..) = coord(i,j,..) - BA/(2*pi)*(L10/(2*Q)-A10*R/Q);
+                    coord(i,j,..) = coord(i,j,..) + BA/(2*pi)*(L10/(2*Q)-A10*(2+R/Q));
+
+                end
+            end
+        end
+        
         error('Not implemented yet');
         
     otherwise
