@@ -98,7 +98,7 @@ switch coord_type
         % boundary pixels
         for i=1:size_x
             for j=1:size_y
-                for k=1:nb_vertices-1
+                for k=1:nb_vertices
                     p1=cage(:,k);
                     if k~=nb_vertices
                         p2=cage(:,k+1);
@@ -119,16 +119,20 @@ switch coord_type
             end
         end
         
+        
         % Display pic_mask (useful for debug)
-%         f=gcf; figure;imshow(pic_mask);title('pic mask'); figure(f);
+        % f=gcf; figure;imshow(pic_mask);title('pic mask'); figure(f);
         display('Done');
         
 
         % Laplacian Smoothing
         display('Laplacian smoothing...');
         niter_max = 2;
-        [X_ind,Y_ind]=find(pic_mask==255);
-%         nb_int_points = length(X_ind);        
+        [interior_Xind,interior_Yind]=find(pic_mask==255);
+        [boundary_Xind,boundary_Yind]=find(pic_mask==128);
+        
+        init_coord = coord;
+     
         average_modif=1;
         new_coord=zeros(size_x,size_y,nb_vertices);
         niter=1;
@@ -136,10 +140,14 @@ switch coord_type
         while (average_modif<1e-3 || niter<niter_max)
             niter=niter+1;
 
-            new_coord(X_ind,Y_ind,:)=(coord(X_ind-1,Y_ind,:)+coord(X_ind+1,Y_ind,:)+coord(X_ind,Y_ind-1,:)+coord(X_ind,Y_ind+1,:))/4;
+            % Updating interior cells
+            new_coord(interior_Xind,interior_Yind,:)=(coord(interior_Xind-1,interior_Yind,:)+coord(interior_Xind+1,interior_Yind,:)+coord(interior_Xind,interior_Yind-1,:)+coord(interior_Xind,interior_Yind+1,:))/4;
 
+            % Projection of the boundaries points
+            new_coord(boundary_Xind,boundary_Yind,:)=init_coord(boundary_Xind,boundary_Yind,:);
+     
             average_modif = mean(new_coord(X_ind,Y_ind,:)-coord(X_ind,Y_ind,:));
-               
+            
             coord = new_coord;
         end
         
@@ -161,34 +169,35 @@ switch coord_type
         % Ref. Y. Lipman, D. Levin, D. Cohen-Or. Green Coordinates.
         
         coord = zeros(size_x,size_y,2*nb_vertices);
+        outward_normals = get_outward_normals(cage);
         for i=1:size_x
             for j=1:size_y
                 eta=[i;j];
-                for k=1:nb_vertices-1
+                for k=1:nb_vertices
                     v1=cage(:,k);
                     if k~=nb_vertices
-                        v2=cage(:,k+1);
+                        ind2=k+1;
                     else
-                        v2=cage(:,1);
+                        ind2=1;
                     end
+                    v2=cage(:,ind2);
                     a = v2-v1; b=v1-eta;
-                    Q = norm(a);S=norm(b);R=2*dot(a,b);
-                    BA = dot(b,Q*..); SRT = sqrt(4*S*Q-R^2);
+                    Q = dot(a,a);S=dot(b,b);R=2*dot(a,b);
+                    BA = dot(b,norm(a)*outward_normals(:,k)); SRT = sqrt(4*S*Q-R^2);
                     L0=log(S);
                     L1=log(S+Q+R);
-                    A0=atan(R/(S*R*T))/(S*R*T);
-                    A1=atan((2*Q+R)/(S*R*T))/(S*R*T);
+                    A0=atan(R/(SRT))/(SRT);
+                    A1=atan((2*Q+R)/(SRT))/(SRT);
                     A10=A1-A0;L10=L1-L0;
-                    coord(i,j,..) = -Q/(4*pi)*((4*S-R^2)*A10+R/(2*Q)*L10+L1-2);
-                    coord(i,j,..) = coord(i,j,..) - BA/(2*pi)*(L10/(2*Q)-A10*R/Q);
-                    coord(i,j,..) = coord(i,j,..) + BA/(2*pi)*(L10/(2*Q)-A10*(2+R/Q));
-
+                    coord(i,j,k+nb_vertices) = -Q/(4*pi)*((4*S-R^2)*A10+R/(2*Q)*L10+L1-2);
+                    coord(i,j,ind2) = coord(i,j,ind2) - BA/(2*pi)*(L10/(2*Q)-A10*R/Q);
+                    coord(i,j,k) = coord(i,j,k) + BA/(2*pi)*(L10/(2*Q)-A10*(2+R/Q));
                 end
+                coord(i,j,:) = coord(i,j,:)/sum(coord(i,j,:)); % Normalisation
             end
         end
         
-        error('Not implemented yet');
-        
+
     otherwise
         error('Unknown coord_type');
 end
