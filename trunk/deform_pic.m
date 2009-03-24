@@ -31,15 +31,16 @@ for i=1:size_x
             % Mean Value and Harmonic are coordinates relative to the
             % positions of the vertices.
             before_def_point = cage*squeeze(coord_p);
-            before_def_x = before_def_point(1);
-            before_def_y = before_def_point(2);
         elseif strcmp(coord_type,'G')
             % Green coordinates also take into account the outward normals
             % of the edges (in 2D).
+            outward_normals=get_outward_normals(cage);
            error('Not implemented yet'); 
         end
 
-
+        before_def_x = before_def_point(1);
+        before_def_y = before_def_point(2);
+            
         if floor(before_def_x)>0 && floor(before_def_y)>0 && before_def_x<size_x && before_def_y<size_y
             if interpolate
                 [X,Y] = meshgrid(floor(before_def_x):floor(before_def_x)+1,floor(before_def_y):floor(before_def_y)+1);
