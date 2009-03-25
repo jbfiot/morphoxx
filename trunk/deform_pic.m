@@ -49,7 +49,7 @@ for i=1:size_x
                 end
             else
                 for k=1:nb_channels
-                    deformed_pic(i,j,k) = pic(floor(before_def_x),floor(before_def_y),k);
+                    deformed_pic(i,j,k) = pic(round(before_def_x),round(before_def_y),k);
                 end
             end
             in = in+1;
