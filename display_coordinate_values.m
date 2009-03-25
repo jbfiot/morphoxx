@@ -13,16 +13,7 @@ coord_type = 'H';
 [image,cage_filename] = switchset(set);
 cage = load(cage_filename);
 
-if ~exist('Output','dir')
-    mkdir('Output');
-end
-if ~exist(['Output/',set],'dir')
-    mkdir(['Output/',set]);
-end
-
-if ~exist(['Output/',set,'/',coord_type],'dir')
-    mkdir(['Output/',set,'/',coord_type]);
-end
+create_output_dir;
 
 % Getting coords
 coord_values = get_coord(cage,size(image,1),size(image,2),coord_type);
