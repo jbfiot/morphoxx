@@ -1,5 +1,12 @@
 % Script to display the coordinate values of the vertices
 % Results are saved in 'Output'
+% 
+% Disclaimer
+% ==========
+% This display is done on the original cages because they have more interesting
+% shapes than the deformed cages in our sets. They have actually no
+% interest at all in our final goal (deforming the pictures), this script is only
+% here as a visual illustration of the different kinds of coordinates.
 
 % File of the MorphoxX Project
 % @author: JB Fiot (HellWoxX)

@@ -5,8 +5,8 @@
 
 clc; clear; close all;
 set = 'Checkerboard';
-interpolate = 1;
-coord_type = 'MV';
+interpolate = 0;
+coord_type = 'H';
 save = 1;
 
 [image,cage_filename,deformed_cage_filename] = switchset(set);
