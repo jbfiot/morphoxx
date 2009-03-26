@@ -70,14 +70,14 @@ for vertex_nb=1:nb_vertices
     
     % One particular vertex
     % =====================
-    filename = ['Output/L Checkerboard/H/Vertex ',int2str(vertex_nb),'.avi'];
+    filename = ['Output/L Checkerboard/H/Vertex ',int2str(vertex_nb),' - ',int2str(niter_max),' iterations.avi'];
     if exist(filename,'file')==2
         delete(filename);
     end
     mov = avifile(filename);
 
     for niter=1:niter_max
-        draw_cage(cage,coord(:,:,vertex_nb)); colormap('hot'); colorbar; title(['Vertex ',int2str(i),' Iter #',int2str(niter)]);
+        draw_cage(cage,coord(:,:,vertex_nb)); colormap('hot'); colorbar; title(['Vertex ',int2str(vertex_nb),' Iter #',int2str(niter)]);
 
         F = getframe; mov = addframe(mov,F);
 
@@ -96,7 +96,7 @@ close(gcf);
 % ============
 
 coord=init_coord;
-filename = 'Output/L Checkerboard/H/All vertices.avi';
+filename = ['Output/L Checkerboard/H/All vertices - ',int2str(niter_max),' iterations.avi'];
 if exist(filename,'file')==2
     delete(filename);
 end
@@ -107,7 +107,7 @@ figure('Position',[50 50 1600 1000]);
 for niter=1:niter_max
     for vertex_nb=1:nb_vertices
         subplot(2,3,vertex_nb);
-        draw_cage(cage,coord(:,:,vertex_nb)); colormap('hot'); colorbar;
+        draw_cage(cage,coord(:,:,vertex_nb)); colormap('hot'); colorbar; title(['Vertex ',int2str(vertex_nb),' Iter #',int2str(niter)]);
     end
 
     F = getframe(gcf);mov = addframe(mov,F);
@@ -119,7 +119,7 @@ end
 mov=close(mov);
 close(gcf);
 
-
+display('Done');
 
 
 
