@@ -9,19 +9,19 @@ function draw_cage(cage,image,active_point)
 % @author: JB Fiot (HellWoxX)
 
 
-[ST,I] = dbstack(1);
+ST = dbstack(1);
 
 if strcmp(ST(1).name,'CageGUI')
     h3=imshow(image); hold on; axis off;
     if nargin==3
         set(h3, 'ButtonDownFcn','CageGUI(''modif_def_cage_point'')');
     end
-elseif strcmp(ST(1).name,'display_coordinate_values')
-    h3=imagesc(image); hold on; axis off;
+elseif (strcmp(ST(1).name,'display_coordinate_values') || strcmp(ST(1).name,'create_movie_HC'))
+    imagesc(image); hold on; axis off;
 else
     % Typically used from files compute_quick_deform.m and
     % compute_progressive_deform.m
-    h3=imshow(image); hold on; axis off;
+    imshow(image); hold on; axis off;
 end
 
 

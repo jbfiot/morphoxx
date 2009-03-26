@@ -23,6 +23,7 @@ in=0;
 out=0;
 coord=get_coord(deformed_cage,size_x,size_y,coord_type);
 
+
 for i=1:size_x
     for j=1:size_y
         coord_p = coord(i,j,:);

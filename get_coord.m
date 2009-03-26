@@ -1,16 +1,15 @@
 function coord = get_coord(cage,size_x,size_y,coord_type)
-% function coord = get_coord(cage,p,coord_type,verbose)
+% function coord = get_coord(cage,size_x,size_y,coord_type)
 % 
-% Compute Coordinates of a point p within the input cage
+% Compute Coordinates of points with x and y ranging from 1 to size_x and size_y, wrt the input cage
 %
 % Input
 %   cage                : dim 2*nb_points
-%   p                   : dim 2*1
+%   size_x, size_y      : int (see description above)
 %   coord_type          : {'MV','H','G'} for "Mean Value", "Harmonic" and "Green" coordinates
-%   verbose (optional)  : boolean
 %
 % Ouptut
-%   coord   : Mean Value coordinates
+%   coord   : Computed coordinates
 
 
 % File of the MorphoxX Project
@@ -101,11 +100,12 @@ switch coord_type
                 for k=1:nb_vertices
                     p1=cage(:,k);
                     if k~=nb_vertices
-                        p2=cage(:,k+1);
+                        ind2=k+1;
                     else
-                        p2=cage(:,1);
+                        ind2=1;
                     end
-                    if (norm(cross([p2-p1;0],[[i;j]-p1;0]))/norm(p1-p2)<.5 && max(norm(p1-[i;j]),norm(p2-[i;j]))<norm(p1-p2))
+                    p2=cage(:,ind2);
+                    if (norm(cross([p2-p1;0],[[i;j]-p1;0]))/norm(p1-p2)<=.5 && max(norm(p1-[i;j]),norm(p2-[i;j]))<norm(p1-p2))
                         % If the distance from the pixel to the edge is
                         % less than 0.5 pixel, and the max distance to 
                         % the vertices is less than the length of the 
@@ -113,51 +113,62 @@ switch coord_type
                         % (corresponding value for the mask: 128)
                         pic_mask(i,j)=128;
                         coord(i,j,k) = norm([i;j]-p2)/norm(p1-p2); % Value is 1 in vertex k, 0 in vertex k+1
-                        coord(i,j,k+1)= norm([i;j]-p1)/norm(p1-p2); % Inverse values
+                        coord(i,j,ind2)= norm([i;j]-p1)/norm(p1-p2); % Inverse values
                     end
                 end
             end
         end
         
+      
+        % Save pic_mask (useful for debugging mask creation)
+        imwrite(pic_mask,'Output/Pic mask.jpg');
         
-        % Display pic_mask (useful for debug)
-        % f=gcf; figure;imshow(pic_mask);title('pic mask'); figure(f);
         display('Done');
         
-
-        % Laplacian Smoothing
-        display('Laplacian smoothing...');
-        niter_max = 2;
-        [interior_Xind,interior_Yind]=find(pic_mask==255);
-        [boundary_Xind,boundary_Yind]=find(pic_mask==128);
         
-        init_coord = coord;
+        % Indices creation for updates
+        display('Indices creation for updates and projections...');
+        interior_ind=find(pic_mask==255);
+        int_nb=length(interior_ind);
+        ind2update = zeros(int_nb*nb_vertices,1);
+        
+        for i=1:nb_vertices
+            ind2update((i-1)*int_nb+1:i*int_nb) = interior_ind+(i-1)*size_x*size_y;
+        end
+        display('Done');
+        
+        
+        % Laplacian Smoothing
+        display('Laplacian smoothing...');   
      
-        average_modif=1;
-        new_coord=zeros(size_x,size_y,nb_vertices);
-        niter=1;
+        average_modif=1;average_modif_threshold = 1e-9;
+        new_coord=coord;
+        niter=0;niter_max = 2000;
 
-        while (average_modif<1e-3 || niter<niter_max)
+        while (abs(average_modif)>average_modif_threshold && niter<niter_max)     
             niter=niter+1;
 
             % Updating interior cells
-            new_coord(interior_Xind,interior_Yind,:)=(coord(interior_Xind-1,interior_Yind,:)+coord(interior_Xind+1,interior_Yind,:)+coord(interior_Xind,interior_Yind-1,:)+coord(interior_Xind,interior_Yind+1,:))/4;
-
-            % Projection of the boundaries points
-            new_coord(boundary_Xind,boundary_Yind,:)=init_coord(boundary_Xind,boundary_Yind,:);
-     
-            average_modif = mean(new_coord(X_ind,Y_ind,:)-coord(X_ind,Y_ind,:));
+            %   Explanation:
+            %     -> ind2update-/+1 corresponds to the add or substraction of 1 for X indices
+            %     -> ind2update-/+size_x corresponds to the add or substraction of 1 for Y indices
+   
+            new_coord(ind2update)=(coord(ind2update-1)+coord(ind2update+1)+coord(ind2update-size_x)+coord(ind2update+size_x))/4;
+         
+            average_modif = mean(new_coord(ind2update)-coord(ind2update)); 
             
             coord = new_coord;
         end
         
-        if (niter==niter_max)
-            display('Maximum number of iterations reached in the computation of Harmonic Coordinates');
-        end
-        
         % Normalisation
-        % -> à rajouter qd le pb de RAM sera rêglé...
+        coord = coord./repmat(sum(coord,3),[1 1 nb_vertices]);
         
+        if (niter==niter_max)
+            display('Maximum number of iterations reached in HC computation');
+        else
+            display(['HC computed in ',int2str(niter),' iterations.']);
+        end
+                
         display('Done');
              
         
