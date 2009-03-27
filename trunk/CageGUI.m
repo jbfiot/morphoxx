@@ -21,7 +21,7 @@ end
 
 switch selector
     case 'select_set'
-        set_list={'Sonic','Checkerboard','L Checkerboard'};
+        set_list={'Sonic','Light Sonic','Checkerboard','L Checkerboard'};
         [selection,ok]=listdlg('PromptString','Select a data set:', 'SelectionMode','single','ListString',set_list);
         if ~ok %default value if not chosen
             selection=1;

@@ -141,9 +141,9 @@ switch coord_type
         % Laplacian Smoothing
         display('Laplacian smoothing...');   
      
-        average_modif=1;average_modif_threshold = 1e-9;
+        average_modif=1;average_modif_threshold = 1e-10;
         new_coord=coord;
-        niter=0;niter_max = 2000;
+        niter=0;niter_max = 25000;
 
         while (abs(average_modif)>average_modif_threshold && niter<niter_max)     
             niter=niter+1;
