@@ -13,6 +13,12 @@ switch set
         cage_filename = 'Data/sonic_cage.txt';
         deformed_cage_filename = 'Data/sonic_def_cage.txt';
 
+    case 'Light Sonic'
+        % Light Sonic set
+        image = imread('Data/sonic-light.jpg');
+        cage_filename = 'Data/light_sonic_cage.txt';
+        deformed_cage_filename = 'Data/light_sonic_def_cage.txt';
+
     case 'Checkerboard'
         % Checkerboard set
         image = imread('Data/100px-Checkerboard_pattern.svg.png');

@@ -15,8 +15,8 @@ clc; clear; close all;
 
 display('Computing... ');
 
-set = 'L Checkerboard';
-coord_type = 'H';
+set = 'Light Sonic';
+coord_type = 'MV';
 [image,cage_filename] = switchset(set);
 cage = load(cage_filename);
 

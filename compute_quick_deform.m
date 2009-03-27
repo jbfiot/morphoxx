@@ -4,7 +4,7 @@
 % @author: JB Fiot (HellWoxX)
 
 clc; clear; close all;
-set = 'Checkerboard';
+set = 'Sonic';
 interpolate = 0;
 coord_type = 'H';
 save = 1;
@@ -14,12 +14,14 @@ save = 1;
 cage = load(cage_filename);
 deformed_cage=load(deformed_cage_filename);
 
+display('Computing deformation... (Long process, please be patient)');
+deformed_pic = deform_pic(image,cage,deformed_cage,coord_type,interpolate);
+
+
 figure;
 subplot(1,2,1);
 draw_cage(cage,image);
 subplot(1,2,2);
-display('Computing deformation... (Long process, please be patient)');
-deformed_pic = deform_pic(image,cage,deformed_cage,coord_type,interpolate);
 draw_cage(deformed_cage,deformed_pic);
 
 if save
