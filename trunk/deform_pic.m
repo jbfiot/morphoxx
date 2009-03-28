@@ -35,8 +35,8 @@ for i=1:size_x
         elseif strcmp(coord_type,'G')
             % Green coordinates also take into account the outward normals
             % of the edges (in 2D).
-            outward_normals=get_outward_normals(cage);
-           error('Not implemented yet'); 
+           outward_normals=get_outward_normals(cage);
+           before_def_point = [cage,outward_normals]*squeeze(coord_p); 
         end
 
         before_def_x = before_def_point(1);

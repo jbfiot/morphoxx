@@ -4,7 +4,7 @@
 % @author: JB Fiot (HellWoxX)
 
 clc; clear; close all;
-set = 'Light Sonic';
+set = 'L Checkerboard';
 interpolate = 0;
 coord_type = 'MV';
 save = 1;
