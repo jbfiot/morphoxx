@@ -143,7 +143,7 @@ switch coord_type
      
         average_modif=1;average_modif_threshold = 1e-10;
         new_coord=coord;
-        niter=0;niter_max = 25000;
+        niter=0;niter_max = 2000;
 
         while (abs(average_modif)>average_modif_threshold && niter<niter_max)     
             niter=niter+1;
@@ -179,32 +179,38 @@ switch coord_type
         %
         % Ref. Y. Lipman, D. Levin, D. Cohen-Or. Green Coordinates.
         
+        pic_mask = poly2mask(cage(2,:),cage(1,:),size_x,size_y);  % Exterior: 0, Interior: 1
+        
         coord = zeros(size_x,size_y,2*nb_vertices);
         outward_normals = get_outward_normals(cage);
+        
         for i=1:size_x
             for j=1:size_y
-                eta=[i;j];
-                for k=1:nb_vertices
-                    v1=cage(:,k);
-                    if k~=nb_vertices
-                        ind2=k+1;
-                    else
-                        ind2=1;
+%                 if pic_mask(i,j)
+                    eta=[i;j];
+                    for k=1:nb_vertices
+                        if k~=nb_vertices
+                            ind2=k+1;
+                        else
+                            ind2=1;
+                        end
+                        v1=cage(:,k);
+                        v2=cage(:,ind2);
+                        a = v2-v1; b=v1-eta;
+                        Q = dot(a,a);S=dot(b,b);R=2*dot(a,b);
+                        BA = dot(b,norm(a)*outward_normals(:,k)); SRT = sqrt(4*S*Q-R^2);
+                        L0=log(S);
+                        L1=log(S+Q+R);
+                        A0=atan(R/SRT)/SRT;
+                        A1=atan((2*Q+R)/SRT)/SRT;
+                        A10=A1-A0;L10=L1-L0;
+                        coord(i,j,k+nb_vertices) = -norm(a)/(4*pi)*((4*S-R^2/Q)*A10+R/(2*Q)*L10+L1-2);
+                        coord(i,j,ind2) = coord(i,j,ind2) - BA/(2*pi)*(L10/(2*Q)-A10*R/Q);
+                        coord(i,j,k) = coord(i,j,k) + BA/(2*pi)*(L10/(2*Q)-A10*(2+R/Q));
                     end
-                    v2=cage(:,ind2);
-                    a = v2-v1; b=v1-eta;
-                    Q = dot(a,a);S=dot(b,b);R=2*dot(a,b);
-                    BA = dot(b,norm(a)*outward_normals(:,k)); SRT = sqrt(4*S*Q-R^2);
-                    L0=log(S);
-                    L1=log(S+Q+R);
-                    A0=atan(R/(SRT))/(SRT);
-                    A1=atan((2*Q+R)/(SRT))/(SRT);
-                    A10=A1-A0;L10=L1-L0;
-                    coord(i,j,k+nb_vertices) = -Q/(4*pi)*((4*S-R^2)*A10+R/(2*Q)*L10+L1-2);
-                    coord(i,j,ind2) = coord(i,j,ind2) - BA/(2*pi)*(L10/(2*Q)-A10*R/Q);
-                    coord(i,j,k) = coord(i,j,k) + BA/(2*pi)*(L10/(2*Q)-A10*(2+R/Q));
-                end
-                coord(i,j,:) = coord(i,j,:)/sum(coord(i,j,:)); % Normalisation
+                    % Tricky "normalisation" (see report for explanations)
+                    coord(i,j,1:nb_vertices) = -coord(i,j,1:nb_vertices)/sum(abs(coord(i,j,1:nb_vertices)));
+%                 end
             end
         end
         

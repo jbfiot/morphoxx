@@ -2,7 +2,7 @@ function create_output_dir
 
 create('Output');
 
-set_list={'Checkerboard','L Checkerboard','Sonic','Light Sonic'};
+set_list={'Checkerboard','L Checkerboard','L2 Checkerboard','Sonic','Light Sonic'};
 coord_list={'MV','H','G'};
 
 
