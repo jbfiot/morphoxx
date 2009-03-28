@@ -36,7 +36,12 @@ for i=1:size_x
             % Green coordinates also take into account the outward normals
             % of the edges (in 2D).
            outward_normals=get_outward_normals(cage);
-           before_def_point = [cage,outward_normals]*squeeze(coord_p); 
+           orig_lengths = get_edge_lengths(cage);
+           def_lengths = get_edge_lengths(deformed_cage);
+           
+           scaling_factors = orig_lengths./def_lengths;
+           
+           before_def_point = [cage,repmat(scaling_factors,[2 1]).*outward_normals]*squeeze(coord_p); 
         end
 
         before_def_x = before_def_point(1);
