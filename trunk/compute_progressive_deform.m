@@ -4,7 +4,7 @@
 % @author: JB Fiot (HellWoxX)
 
 clc; clear; close all;
-set = 'L Checkerboard';
+set = 'Checkerboard';
 interpolate = 0;
 coord_type = 'G';
 save = 1;
